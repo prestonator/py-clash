@@ -52,12 +52,6 @@ def make_job_dictionary(values: dict[str, Any]) -> dict[str, Any]:
 
     job_dictionary["upgrade_user_toggle"] = as_bool(UIField.CARD_UPGRADE_USER_TOGGLE)
 
-    # MEmu render mode
-    if values.get(UIField.DIRECTX_TOGGLE.value):
-        job_dictionary["memu_render_mode"] = "directx"
-    else:
-        job_dictionary["memu_render_mode"] = "opengl"
-
     # BlueStacks render mode selection
     if values.get(UIField.BS_RENDERER_DX.value):
         job_dictionary["bluestacks_render_mode"] = "dx"
@@ -67,14 +61,12 @@ def make_job_dictionary(values: dict[str, Any]) -> dict[str, Any]:
         job_dictionary["bluestacks_render_mode"] = "gl"
 
     # Emulator selection
-    if values.get(UIField.GOOGLE_PLAY_EMULATOR_TOGGLE.value):
-        job_dictionary["emulator"] = "Google Play"
-    elif values.get(UIField.BLUESTACKS_EMULATOR_TOGGLE.value):
+    if values.get(UIField.BLUESTACKS_EMULATOR_TOGGLE.value):
         job_dictionary["emulator"] = "BlueStacks 5"
     elif values.get(UIField.ADB_TOGGLE.value):
         job_dictionary["emulator"] = "ADB Device"
     else:
-        job_dictionary["emulator"] = "MEmu"
+        job_dictionary["emulator"] = "BlueStacks 5"
 
     job_dictionary[UIField.ADB_SERIAL.value] = values.get(UIField.ADB_SERIAL.value)
 
