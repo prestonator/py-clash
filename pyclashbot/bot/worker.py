@@ -4,8 +4,8 @@ import traceback
 from pyclashbot.bot.states import StateHistory, StateOrder, state_tree
 from pyclashbot.emulators.adb import AdbController
 from pyclashbot.emulators.bluestacks import BlueStacksEmulatorController
-from pyclashbot.emulators.google_play import GooglePlayEmulatorController
-from pyclashbot.emulators.memu import MemuEmulatorController, verify_memu_installation
+#from pyclashbot.emulators.google_play import GooglePlayEmulatorController
+#from pyclashbot.emulators.memu import MemuEmulatorController, verify_memu_installation
 from pyclashbot.utils.logger import Logger
 from pyclashbot.utils.thread import PausableThread, ThreadKilled
 
@@ -16,33 +16,11 @@ class WorkerThread(PausableThread):
         self.logger: Logger = logger
         self.in_a_clan = False
 
-    def _create_google_play_emulator(self):
-        """Create and return a Google Play emulator instance."""
-        try:
-            emulator = GooglePlayEmulatorController(logger=self.logger)
-            print("Successfully created google play emulator")
-            return emulator
-        except Exception as e:
-            print(f"Failed to create Google Play emulator: {e}")
-            self.logger.change_status("Failed to start Google Play. Verify its installation!")
-            return None
-
-    def _create_memu_emulator(self, render_mode):
-        """Create and return a MEmu emulator instance."""
-        if not verify_memu_installation():
-            self.logger.change_status("Memu is not installed! Please install it to use Memu Emulator Mode")
-            return None
-
-        return MemuEmulatorController(self.logger, render_mode)
-
     def _setup_emulator(self, jobs):
         """Set up the appropriate emulator based on job configuration."""
-        emulator_selection = jobs.get("emulator", "MEmu")
+        emulator_selection = jobs.get("emulator", "BlueStacks 5")
 
-        if emulator_selection == "Google Play":
-            print("Creating google play emulator")
-            return self._create_google_play_emulator()
-        elif emulator_selection in ("BlueStacks 5"):
+        if emulator_selection in ("BlueStacks 5"):
             print("Creating BlueStacks 5 emulator")
             try:
                 bs_mode = jobs.get("bluestacks_render_mode", "gl")
@@ -52,9 +30,6 @@ class WorkerThread(PausableThread):
                 print(f"Failed to create BlueStacks 5 emulator: {e}")
                 self.logger.change_status("Failed to start BlueStacks 5. Verify its installation!")
                 return None
-        elif emulator_selection == "MEmu":
-            render_mode = jobs.get("memu_render_mode", "opengl")
-            return self._create_memu_emulator(render_mode)
 
         elif emulator_selection == "ADB Device":
             print("Creating ADB Device controller")
